@@ -3,6 +3,7 @@ import styles from "./page.module.css";
 import { prisma } from "@/lib/db";
 import TestAPI from "@/components/TestAPI";
 
+export const dynamic = 'force-dynamic';
 
 export default async function BrowseItemPage({
 												 params,
