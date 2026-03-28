@@ -2,6 +2,8 @@ import styles from "./page.module.css";
 import ApiCard from "@/components/ApiCard"
 import { prisma } from "@/lib/db"
 
+export const dynamic = 'force-dynamic';
+
 export default async function BrowsePage() {
   const apis = await prisma.apiItem.findMany();
   return (
