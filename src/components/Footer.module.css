@@ -1,0 +1,9 @@
+.footer {
+  margin-top: 2rem;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: var(--blur);
+  border-top: 1px solid rgba(229, 231, 235, 0.75);
+}

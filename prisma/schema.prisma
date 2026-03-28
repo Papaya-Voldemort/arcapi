@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ApiItem {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  tagline     String
+  description String
+  category    String
+  pricing     Pricing
+  latency     Int
+  uptime      Float
+  auth        Auth
+  endpoint    String
+  version     String
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Pricing {
+  Free
+  Freemium
+  Paid
+}
+
+enum Auth {
+  API_KEY
+  OAuth
+  None
+}
