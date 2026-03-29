@@ -13,7 +13,7 @@ export default function Home() {
 
         <div className={styles.actions}>
           <Link className={styles.primaryAction} href="/browse">
-            Browse template
+            Browse APIs
           </Link>
           <a className={styles.secondaryAction} href="/add-api">
             Add API

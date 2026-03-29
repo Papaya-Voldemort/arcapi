@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import styles from "./page.module.css";
 import { prisma } from "@/lib/db";
 import { Pricing, Auth } from "@prisma/client";
@@ -62,11 +63,13 @@ export async function addApiItem(formData: FormData) {
             pricing: parsedPricing,
             endpoint,
             auth: parsedAuth,
-            latency: parseInt(latency),
-            uptime: parseInt(uptime),
+            latency: Math.round(parseFloat(latency)),
+            uptime: Math.round(parseFloat(uptime)),
             version,
         },
     });
+
+    redirect("/browse");
 }
 
 export default function Home() {
