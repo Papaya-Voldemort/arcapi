@@ -53,7 +53,11 @@
   padding: 0.85rem 1.15rem;
   border-radius: 999px;
   font-weight: 600;
-  transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.12s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .primaryAction {
@@ -77,31 +81,38 @@
   transform: translateY(-1px);
 }
 
+.featuredSection {
+  display: grid;
+  gap: 1rem;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.sectionHeader p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
-.card {
+.emptyState {
   padding: 1.25rem;
   background: var(--surface);
   border: 1px solid rgba(229, 231, 235, 0.9);
   border-radius: 16px;
-  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.02);
-}
-
-.card:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-}
-
-.card h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1.1rem;
-}
-
-.card p {
-  margin: 0;
   color: var(--muted);
 }
-

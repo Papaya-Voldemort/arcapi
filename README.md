@@ -1,62 +1,246 @@
 # ArcAPI
 
-ArcAPI is a modern directory and testing platform for APIs. It allows developers to discover, compare, and interactively test various APIs across different categories.
+ArcAPI is a small Next.js + Prisma app for cataloging APIs in one place, browsing their metadata, and testing their public endpoints from the browser.
 
-## Features
+The project currently has three main user-facing parts:
 
-- **Comprehensive API Directory**: Browse APIs categorized by function (Weather, Auth, Payments, etc.).
-- **Live Performance Metrics**: View latency and uptime statistics for each API.
-- **Interactive Playground**: Test API endpoints directly from the browser using the built-in testing interface.
-- **Detailed API Profiles**: Deep dive into API capabilities, pricing models (Free, Freemium, Paid), and authentication methods (API Key, OAuth, None).
-- **Easy Submission**: Add new APIs to the directory via a simple submission flow.
+1. A landing page at `/` that points you into the app.
+2. A browse flow at `/browse` and `/browse/[slug]` that lists API records from PostgreSQL.
+3. An add form at `/add-api` that creates new API records in the database.
+
+If you were confused about what this project is, the short version is:
+
+- It is not an API itself.
+- It is a directory for APIs.
+- It stores API metadata in PostgreSQL through Prisma.
+- It can call an API endpoint from the browser and display the JSON response.
+
+## What You Can Do
+
+- Browse the APIs already stored in the database.
+- Open a single API record to view its details.
+- Click a button to test the API endpoint directly in the browser.
+- Add new API records through a form instead of editing the database manually.
 
 ## Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Database**: [PostgreSQL](https://www.postgresql.org/)
-- **ORM**: [Prisma](https://www.prisma.io/)
-- **Styling**: CSS Modules
-- **Linting/Formatting**: [Biome](https://biomejs.dev/)
+- Next.js 16
+- React 19
+- TypeScript
+- Prisma 7
+- PostgreSQL
+- Biome for formatting and linting
 
-## Getting Started
+## Prerequisites
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Papaya-Voldemort/arcapi.git
-   ```
+Before you run the app, make sure you have:
 
-2. **Install dependencies**:
+- Node.js installed
+- npm installed
+- A reachable PostgreSQL database
+- A valid `DATABASE_URL`
+
+## Setup
+
+1. Install dependencies:
+
    ```bash
    npm install
    ```
 
-3. **Set up your environment**:
-   Create a `.env` file with your `DATABASE_URL`.
+2. Create a `.env` file in the project root with your database connection string:
 
-4. **Initialize the database**:
+   ```env
+   DATABASE_URL="postgresql://user:password@host:5432/database"
+   ```
+
+3. Push the Prisma schema to the database:
+
    ```bash
    npx prisma db push
    ```
 
-5. **Run the development server**:
+4. Seed the database with real public APIs:
+
+   ```bash
+   npm run db:seed
+   ```
+
+5. Start the development server:
+
    ```bash
    npm run dev
    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open the app:
+
+   ```text
+   http://localhost:3000
+   ```
+
+## How To Use The App
+
+### Home
+
+The homepage is a simple starting point with links to the two main flows:
+
+- `Browse APIs`
+- `Add API`
+
+It also highlights a few seeded public APIs so you can open a live record right
+away.
+
+The starter dataset includes:
+
+- PokéAPI
+- Random User
+- Agify
+- Dog CEO
+- icanhazdadjoke
+
+### Browse APIs
+
+Go to `/browse` to see every API stored in the database.
+
+Each card shows:
+
+- Name
+- Tagline
+- Short description
+
+Click a card to open `/browse/[slug]`, where you can see the full record.
+
+The seeded records are real public APIs with no authentication required. They
+are there to demonstrate the end-to-end workflow on a fresh install.
+
+### API Details Page
+
+The detail page shows the fields saved for each API:
+
+- Category
+- Pricing
+- Latency
+- Uptime
+- Auth type
+- Endpoint URL
+- Version
+
+This page also includes a `Test Now!` button.
+
+That button:
+
+- Sends a `fetch()` request to the stored endpoint
+- Expects a JSON response
+- Renders the returned JSON in the page
+
+If the endpoint does not return JSON, the test output will show an error.
+
+### Add API
+
+Go to `/add-api` to create a new API entry.
+
+The form collects these fields:
+
+- `API Name`
+- `Category`
+- `Tagline`
+- `Description`
+- `Pricing`
+- `Latency (ms)`
+- `Uptime (%)`
+- `Auth`
+- `Endpoint`
+- `Version`
+
+When the form is submitted, the app:
+
+- Converts the API name into a slug
+- Saves the record to PostgreSQL through Prisma
+- Redirects you back to `/browse`
+
+#### Allowed Pricing Values
+
+- Free
+- Freemium
+- Paid
+
+#### Allowed Auth Values
+
+- `API_KEY` for API Key
+- `oauth` for OAuth
+- `none` for None
+
+Latency and uptime accept numeric input, but the current form stores them as whole numbers after rounding.
+
+## Data Model
+
+The database stores records in the `ApiItem` table.
+
+Important fields:
+
+- `slug`: used for the detail page URL
+- `name`: display name
+- `tagline`: short summary shown on browse cards
+- `description`: longer description
+- `category`: grouping label
+- `pricing`: enum value
+- `latency`: numeric latency value
+- `uptime`: numeric uptime value
+- `auth`: enum value
+- `endpoint`: public API endpoint to test
+- `version`: version label
+- `featured`: optional boolean flag
 
 ## Project Structure
 
-- `src/app`: Next.js pages and routing.
-- `src/components`: Reusable UI components (Navbar, Footer, ApiCard, TestAPI).
-- `src/lib`: Shared utilities, database client, and mock data.
-- `prisma`: Database schema and configuration.
+- `src/app`: App Router pages
+- `src/app/browse`: browse list and detail pages
+- `src/app/add-api`: API submission form
+- `src/components`: shared UI pieces like cards, navigation, footer, and tester
+- `src/lib`: shared utilities and the Prisma client
+- `prisma`: schema and migrations
 
 ## Scripts
 
-- `npm run dev`: Start development server.
-- `npm run build`: Build for production.
-- `npm run start`: Start production server.
-- `npm run lint`: Run Biome check.
-- `npm run format`: Format code with Biome.
+- `npm run dev`: start the development server
+- `npm run build`: build for production
+- `npm run start`: start the production server
+- `npm run lint`: run Biome checks
+- `npm run format`: format the codebase with Biome
+
+## Implementation Notes
+
+- `npm install` runs `prisma generate` automatically through the `postinstall` script.
+- The browse pages are marked dynamic so they always read the latest database records.
+- The app uses a PostgreSQL adapter with Prisma in `src/lib/db.ts`.
+- The current homepage is intentionally lightweight and acts as a navigation entry point.
+
+## Troubleshooting
+
+### No APIs show up on `/browse`
+
+- Confirm `DATABASE_URL` is set correctly.
+- Confirm `npx prisma db push` completed successfully.
+- Add at least one API through `/add-api` or insert a row directly in PostgreSQL.
+
+### The test button fails
+
+- Make sure the stored endpoint is reachable from your browser.
+- Make sure the endpoint returns JSON.
+- Check that the URL begins with `http://` or `https://`.
+
+### Prisma errors on startup
+
+- Confirm the database exists.
+- Confirm the database user has permission to create and read tables.
+- Re-run `npx prisma db push` after any schema change.
+
+## Example Workflow
+
+1. Start the app.
+2. Open `/add-api`.
+3. Enter a real API name, description, endpoint, and metadata.
+4. Submit the form.
+5. Open `/browse`.
+6. Click the new card.
+7. Use `Test Now!` to verify the endpoint response.

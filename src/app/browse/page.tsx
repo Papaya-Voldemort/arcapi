@@ -20,7 +20,9 @@ function toCardApi(api: {
 
 export default async function BrowsePage() {
   const apis = await prisma.apiItem
-    .findMany()
+    .findMany({
+      orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
+    })
     .then((records) => records.map(toCardApi))
     .catch((error) => {
       console.error("Database error in BrowsePage:", error);
@@ -30,19 +32,26 @@ export default async function BrowsePage() {
   return (
     <section className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.kicker}>Browse template</p>
+        <p className={styles.kicker}>Public API directory</p>
         <h1>Browse APIs</h1>
         <p>
-          Explore the APIs that have been added to the directory. Click on any
-          API card to view more details and try it out directly in your browser.
+          Explore the APIs stored in the directory. Click any API card to view
+          the details and test the endpoint directly in your browser.
         </p>
       </header>
 
-      <div className={styles.results}>
-        {apis.map((api) => (
-          <ApiCard key={api.slug} api={api} />
-        ))}
-      </div>
+      {apis.length > 0 ? (
+        <div className={styles.results}>
+          {apis.map((api) => (
+            <ApiCard key={api.slug} api={api} />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.emptyState}>
+          <p>No APIs are stored yet.</p>
+          <p>Seed the database or add a new API to populate this directory.</p>
+        </div>
+      )}
     </section>
   );
 }

@@ -51,6 +51,14 @@
   gap: 1rem;
 }
 
+.emptyState {
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+}
+
 .card {
   padding: 1.25rem;
   background: var(--surface);

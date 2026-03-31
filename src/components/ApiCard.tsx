@@ -1,5 +1,5 @@
+import type { ApiItem } from "@prisma/client";
 import Link from "next/link";
-import { type ApiItem } from "@prisma/client";
 import styles from "./ApiCard.module.css";
 
 type ApiCardProps = {
